@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>حسابي | ألعابي</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header id="site-header"></header>
+  <main class="container section">
+    <h1 class="section__title">حسابي</h1>
+
+    <section class="card" id="account-info">
+      <h3>البيانات الأساسية</h3>
+      <p id="acc-name"></p>
+      <p id="acc-email"></p>
+      <p id="acc-role"></p>
+    </section>
+
+    <section class="card" id="subscription-status">
+      <h3>الاشتراك</h3>
+      <p id="sub-text"></p>
+      <div class="form__actions">
+        <a class="btn btn--primary" href="/pages/booking/index.html">تجديد/طلب اشتراك</a>
+      </div>
+    </section>
+
+    <section class="card" id="progress">
+      <h3>التقدّم والإنجازات</h3>
+      <div id="scores"></div>
+      <div id="badges"></div>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+
+  <script src="/js/store.js"></script>
+  <script src="/data/seed.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    (function(){
+      const S = window.AppStore;
+      const uid = localStorage.getItem('currentUserId');
+      const user = uid ? S.getById('users', uid) : null;
+      const subs = (S.all('subscriptions')||[]).filter(s=>s.userId===uid || (user && s.email===user.email));
+      const active = user?.active && subs.some(s=>s.status==='مقبول');
+
+      // account
+      document.getElementById('acc-name').textContent = 'الاسم: ' + (user?.name || 'غير مسجّل');
+      document.getElementById('acc-email').textContent = 'البريد: ' + (user?.email || '-');
+      document.getElementById('acc-role').textContent = 'الدور: ' + (user?.role || '-');
+
+      // subscription
+      const subText = document.getElementById('sub-text');
+      if (!user){ subText.textContent = 'الرجاء تسجيل الدخول.'; }
+      else if (active){ subText.textContent = 'حالة الاشتراك: مميّز (مفعّل).'; }
+      else if (subs.length){ subText.textContent = 'حالة الاشتراك: بانتظار التفعيل.'; }
+      else { subText.textContent = 'لا يوجد اشتراك. يمكنك إرسال طلب من صفحة الحجز.'; }
+
+      // progress (from test sessions and skills tracking)
+      const sessions = (S.all('sessions')||[]).filter(s=>s.userId===uid);
+      const scoresWrap = document.getElementById('scores');
+      scoresWrap.innerHTML = sessions.length ? (
+        '<b>نتائج الاختبارات</b><ul>' + sessions.map(s=>`<li>${new Date(s.finishedAt||s.startedAt).toLocaleString('ar-EG')} · درجة: ${s.score ?? '-'}%</li>`).join('') + '</ul>'
+      ) : '<p>لا توجد نتائج اختبارات بعد.</p>';
+
+      const badges = (S.all('badges')||[]).filter(b=>b.userId===uid);
+      const badgesWrap = document.getElementById('badges');
+      badgesWrap.innerHTML = badges.length ? (
+        '<b>الشارات</b><div class="grid" style="grid-template-columns:repeat(4,1fr);gap:.5rem">' + badges.map(b=>`<div class='card'><b>${b.name}</b><br><small>${b.reason||''}</small></div>`).join('') + '</div>'
+      ) : '<p>لا توجد شارات حالياً.</p>';
+
+      // skills summary
+      function ageFromId(id){ if (!id) return '?'; if (id.startsWith('a35_')) return '3–5'; if (id.startsWith('a68_')) return '6–8'; if (id.startsWith('a912_')) return '9–12'; if (id.startsWith('a1315_')) return '13–15'; return '?'; }
+      let skills = []; try { skills = JSON.parse(localStorage.getItem('skills_scores'))||[]; } catch {}
+      skills = skills.filter(r => r.userId === uid);
+      const byAge = skills.reduce((acc, r)=>{ const a = ageFromId(r.id); acc[a] = acc[a] || { tries:0, ok:0 }; acc[a].tries++; if (r.ok) acc[a].ok++; return acc; }, {});
+      const ages = ['3–5','6–8','9–12','13–15'];
+      const rows = ages.map(a=>{ const d = byAge[a]||{tries:0,ok:0}; const pct = d.tries ? Math.round((d.ok/d.tries)*100) : 0; return `<li>${a}: ${pct}% (صحيحة: ${d.ok}/${d.tries})</li>`; }).join('');
+      const skillsHtml = `<b>ملخص تمارين المهارات</b><ul>${rows||'<li>لا توجد محاولات بعد.</li>'}</ul>`;
+      const prog = document.getElementById('progress');
+      const div = document.createElement('div'); div.innerHTML = skillsHtml; prog.appendChild(div);
+    })();
+  </script>
+</body>
+</html>

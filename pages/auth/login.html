@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>تسجيل الدخول | ألعابي</title><link rel="stylesheet" href="/css/style.css"/></head>
+<body>
+<header id="site-header"></header>
+<main class="container section">
+  <h1 class="section__title">تسجيل الدخول</h1>
+  <form id="login-form" class="form card">
+    <div class="form__field"><label>البريد</label><input type="email" name="email" required></div>
+    <div class="form__field"><label>كلمة المرور</label><input type="password" name="password" required></div>
+    <div class="form__actions"><button class="btn btn--primary">دخول</button> <a href="/pages/auth/reset.html">نسيت كلمة المرور؟</a></div>
+    <p id="login-msg" class="success" hidden></p>
+  </form>
+  <p>ليس لديك حساب؟ <a href="/pages/auth/register.html">سجّل الآن</a></p>
+</main>
+<footer id="site-footer"></footer>
+<script src="/js/store.js"></script>
+<script src="/data/seed.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/auth.js"></script>
+</body></html>

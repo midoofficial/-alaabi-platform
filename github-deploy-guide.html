@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل النشر على GitHub - منصة ألعابي</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #24292e, #586069);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .github-logo {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #24292e;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #24292e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .step-number {
+            background: #24292e;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .substep {
+            background: white;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .substep h4 {
+            margin-top: 0;
+            color: #586069;
+        }
+        .code-block {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            direction: ltr;
+            text-align: left;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        .code-block.command {
+            background: #24292e;
+            color: #f6f8fa;
+            border-color: #444d56;
+        }
+        .btn {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+        .btn-primary {
+            background: #0366d6;
+        }
+        .btn-primary:hover {
+            background: #0256cc;
+        }
+        .btn-secondary {
+            background: #6f42c1;
+        }
+        .btn-secondary:hover {
+            background: #5a32a3;
+        }
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border: 1px solid;
+        }
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        .alert-success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .progress-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            position: relative;
+        }
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        .progress-step::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            right: -50%;
+            height: 2px;
+            background: #e1e4e8;
+            z-index: 1;
+        }
+        .progress-step:last-child::before {
+            display: none;
+        }
+        .progress-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e1e4e8;
+            color: #586069;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+        .progress-step.active .progress-circle {
+            background: #28a745;
+            color: white;
+        }
+        .progress-step.completed .progress-circle {
+            background: #0366d6;
+            color: white;
+        }
+        .progress-step.completed::before {
+            background: #0366d6;
+        }
+        .screenshot-placeholder {
+            background: #f6f8fa;
+            border: 2px dashed #d1d5da;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            color: #586069;
+            margin: 1rem 0;
+        }
+        .copy-btn {
+            background: #586069;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+        .copy-btn:hover {
+            background: #444d56;
+        }
+        .file-tree {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            direction: ltr;
+            text-align: left;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checklist li::before {
+            content: "☐";
+            font-size: 1.2rem;
+            color: #586069;
+        }
+        .checklist li.completed::before {
+            content: "✅";
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <svg class="github-logo" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                دليل النشر على GitHub
+            </h1>
+            <p>خطوة بخطوة من التثبيت إلى النشر على Netlify</p>
+        </div>
+
+        <div class="content">
+            <div class="progress-indicator">
+                <div class="progress-step active">
+                    <div class="progress-circle">1</div>
+                    <div>تثبيت Git</div>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-circle">2</div>
+                    <div>إعداد GitHub</div>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-circle">3</div>
+                    <div>رفع المشروع</div>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-circle">4</div>
+                    <div>ربط Netlify</div>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>📋 ملاحظة مهمة:</strong> Git غير مثبت على نظامك حالياً. سنبدأ بتثبيته أولاً.
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">1</span> تثبيت Git</h3>
+                
+                <div class="substep">
+                    <h4>أ. تحميل Git</h4>
+                    <p>اذهب إلى الموقع الرسمي وحمّل Git لنظام Windows:</p>
+                    <a href="https://git-scm.com/download/win" target="_blank" class="btn btn-primary">
+                        تحميل Git for Windows
+                    </a>
+                </div>
+
+                <div class="substep">
+                    <h4>ب. تثبيت Git</h4>
+                    <ol>
+                        <li>شغّل الملف المحمّل</li>
+                        <li>اتبع معالج التثبيت مع الإعدادات الافتراضية</li>
+                        <li>تأكد من تحديد "Git Bash Here" و "Git GUI Here"</li>
+                        <li>اختر "Use Git from the Windows Command Prompt"</li>
+                    </ol>
+                </div>
+
+                <div class="substep">
+                    <h4>ج. التحقق من التثبيت</h4>
+                    <p>بعد التثبيت، أعد تشغيل PowerShell وتحقق من التثبيت:</p>
+                    <div class="code-block command">
+git --version</div>
+                    <p>يجب أن ترى رقم إصدار Git</p>
+                </div>
+
+                <div class="substep">
+                    <h4>د. إعداد Git للمرة الأولى</h4>
+                    <div class="code-block command">
+git config --global user.name "اسمك هنا"
+git config --global user.email "your-email@example.com"</div>
+                    <div class="alert alert-warning">
+                        <strong>مهم:</strong> استخدم نفس البريد الإلكتروني المسجل في GitHub
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">2</span> إعداد GitHub</h3>
+                
+                <div class="substep">
+                    <h4>أ. إنشاء حساب GitHub (إذا لم يكن لديك)</h4>
+                    <a href="https://github.com/signup" target="_blank" class="btn btn-primary">
+                        إنشاء حساب GitHub
+                    </a>
+                </div>
+
+                <div class="substep">
+                    <h4>ب. إنشاء مستودع جديد</h4>
+                    <ol>
+                        <li>اذهب إلى <a href="https://github.com" target="_blank">github.com</a></li>
+                        <li>اضغط على زر "New" الأخضر أو "+"</li>
+                        <li>اختر "New repository"</li>
+                        <li>املأ البيانات كما يلي:</li>
+                    </ol>
+                    
+                    <div class="code-block">
+Repository name: alaabi-platform
+Description: منصة ألعابي مع الأخصائية ميرنا السيد - منصة تعليمية عربية للأطفال
+☐ Public (أو Private حسب الرغبة)
+☐ لا تضع ✅ في Add a README file
+☐ لا تضع ✅ في Add .gitignore
+☐ لا تضع ✅ في Choose a license</div>
+                    
+                    <p>اضغط "Create repository"</p>
+                </div>
+
+                <div class="substep">
+                    <h4>ج. نسخ رابط المستودع</h4>
+                    <p>بعد إنشاء المستودع، انسخ الرابط الذي يظهر (مثل):</p>
+                    <div class="code-block">
+https://github.com/YOUR-USERNAME/alaabi-platform.git</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">3</span> رفع المشروع إلى GitHub</h3>
+                
+                <div class="alert alert-success">
+                    <strong>✅ الآن:</strong> بعد تثبيت Git، نفذ الأوامر التالية في PowerShell
+                </div>
+
+                <div class="substep">
+                    <h4>أ. الانتقال لمجلد المشروع</h4>
+                    <div class="code-block command">
+cd "d:\منصة العابي"</div>
+                    <button class="copy-btn" onclick="copyToClipboard('cd &quot;d:\\منصة العابي&quot;')">نسخ</button>
+                </div>
+
+                <div class="substep">
+                    <h4>ب. إنشاء مستودع Git محلي</h4>
+                    <div class="code-block command">
+git init</div>
+                    <button class="copy-btn" onclick="copyToClipboard('git init')">نسخ</button>
+                </div>
+
+                <div class="substep">
+                    <h4>ج. إضافة جميع الملفات</h4>
+                    <div class="code-block command">
+git add .</div>
+                    <button class="copy-btn" onclick="copyToClipboard('git add .')">نسخ</button>
+                </div>
+
+                <div class="substep">
+                    <h4>د. إنشاء أول commit</h4>
+                    <div class="code-block command">
+git commit -m "إعداد منصة ألعابي - النسخة الأولى"</div>
+                    <button class="copy-btn" onclick="copyToClipboard('git commit -m &quot;إعداد منصة ألعابي - النسخة الأولى&quot;')">نسخ</button>
+                </div>
+
+                <div class="substep">
+                    <h4>هـ. ربط المستودع المحلي بـ GitHub</h4>
+                    <div class="code-block command">
+git remote add origin https://github.com/YOUR-USERNAME/alaabi-platform.git</div>
+                    <button class="copy-btn" onclick="copyToClipboard('git remote add origin ')">نسخ</button>
+                    <div class="alert alert-warning">
+                        <strong>مهم:</strong> استبدل YOUR-USERNAME باسم المستخدم الخاص بك في GitHub
+                    </div>
+                </div>
+
+                <div class="substep">
+                    <h4>و. تحديد الفرع الرئيسي</h4>
+                    <div class="code-block command">
+git branch -M main</div>
+                    <button class="copy-btn" onclick="copyToClipboard('git branch -M main')">نسخ</button>
+                </div>
+
+                <div class="substep">
+                    <h4>ز. رفع المشروع إلى GitHub</h4>
+                    <div class="code-block command">
+git push -u origin main</div>
+                    <button class="copy-btn" onclick="copyToClipboard('git push -u origin main')">نسخ</button>
+                    <p>قد يطلب منك تسجيل الدخول إلى GitHub</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">4</span> ربط GitHub بـ Netlify</h3>
+                
+                <div class="substep">
+                    <h4>أ. الذهاب إلى Netlify</h4>
+                    <a href="https://netlify.com" target="_blank" class="btn btn-secondary">
+                        فتح Netlify
+                    </a>
+                    <p>سجل دخول أو أنشئ حساب جديد</p>
+                </div>
+
+                <div class="substep">
+                    <h4>ب. إنشاء موقع جديد</h4>
+                    <ol>
+                        <li>اضغط "New site from Git"</li>
+                        <li>اختر "GitHub"</li>
+                        <li>سجل دخول إلى GitHub إذا طُلب منك</li>
+                        <li>اختر مستودع "alaabi-platform"</li>
+                    </ol>
+                </div>
+
+                <div class="substep">
+                    <h4>ج. إعدادات النشر</h4>
+                    <div class="code-block">
+Branch to deploy: main
+Build command: (اتركه فارغاً)
+Publish directory: .</div>
+                    <p>اضغط "Deploy site"</p>
+                </div>
+
+                <div class="substep">
+                    <h4>د. انتظار اكتمال النشر</h4>
+                    <p>سيستغرق النشر 1-3 دقائق. ستحصل على رابط مثل:</p>
+                    <div class="code-block">
+https://amazing-site-123456.netlify.app</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">5</span> إعدادات ما بعد النشر</h3>
+                
+                <div class="alert alert-info">
+                    <strong>🔗 مهم:</strong> بعد النشر، ستحتاج لتحديث الروابط في المشروع
+                </div>
+
+                <div class="substep">
+                    <h4>أ. تحديث الروابط</h4>
+                    <p>استخدم أداة تحديث الروابط:</p>
+                    <a href="update-links.html" target="_blank" class="btn">🔗 أداة تحديث الروابط</a>
+                </div>
+
+                <div class="substep">
+                    <h4>ب. إعداد Google Analytics</h4>
+                    <ol>
+                        <li>أنشئ حساب Google Analytics</li>
+                        <li>احصل على Measurement ID</li>
+                        <li>استبدل GA_MEASUREMENT_ID في الملفات</li>
+                    </ol>
+                </div>
+
+                <div class="substep">
+                    <h4>ج. تخصيص اسم الموقع</h4>
+                    <p>في Netlify:</p>
+                    <ol>
+                        <li>Site settings > Domain management</li>
+                        <li>Options > Edit site name</li>
+                        <li>غيّر إلى اسم مناسب مثل: alaabi-platform</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">6</span> التحديثات المستقبلية</h3>
+                
+                <div class="alert alert-success">
+                    <strong>🎉 ميزة رائعة:</strong> الآن أي تغيير تقوم به سيتم نشره تلقائياً!
+                </div>
+
+                <div class="substep">
+                    <h4>لتحديث الموقع مستقبلاً:</h4>
+                    <div class="code-block command">
+# بعد تعديل الملفات
+git add .
+git commit -m "وصف التحديث"
+git push</div>
+                    <p>سيتم تحديث الموقع تلقائياً في غضون دقائق!</p>
+                </div>
+            </div>
+
+            <div class="alert alert-success">
+                <h3>🎉 تهانينا!</h3>
+                <p>مشروعك الآن منشور على GitHub ومربوط بـ Netlify للنشر التلقائي!</p>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <a href="https://github.com" target="_blank" class="btn btn-primary">
+                        عرض المشروع على GitHub
+                    </a>
+                    <a href="https://netlify.com" target="_blank" class="btn btn-secondary">
+                        إدارة الموقع على Netlify
+                    </a>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>📋 قائمة التحقق النهائية</h3>
+                <ul class="checklist">
+                    <li id="git-installed">تم تثبيت Git</li>
+                    <li id="github-account">تم إنشاء حساب GitHub</li>
+                    <li id="repo-created">تم إنشاء مستودع جديد</li>
+                    <li id="project-uploaded">تم رفع المشروع</li>
+                    <li id="netlify-connected">تم ربط Netlify</li>
+                    <li id="site-deployed">تم نشر الموقع</li>
+                    <li id="links-updated">تم تحديث الروابط</li>
+                    <li id="analytics-setup">تم إعداد Analytics</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ تم النسخ!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#586069';
+                }, 2000);
+            }).catch(function(err) {
+                alert('فشل في نسخ النص. يرجى النسخ يدوياً.');
+            });
+        }
+
+        // Progress tracking
+        function markStepCompleted(stepId) {
+            const step = document.getElementById(stepId);
+            if (step) {
+                step.classList.add('completed');
+            }
+        }
+
+        // Auto-progress simulation (for demo)
+        function simulateProgress() {
+            const steps = ['git-installed', 'github-account', 'repo-created', 'project-uploaded', 'netlify-connected', 'site-deployed'];
+            let currentStep = 0;
+            
+            const interval = setInterval(() => {
+                if (currentStep < steps.length) {
+                    markStepCompleted(steps[currentStep]);
+                    currentStep++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 2000);
+        }
+
+        // Update progress indicators
+        function updateProgressIndicator(stepNumber) {
+            const steps = document.querySelectorAll('.progress-step');
+            steps.forEach((step, index) => {
+                if (index < stepNumber) {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                } else if (index === stepNumber) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        // Initialize
+        window.addEventListener('load', function() {
+            updateProgressIndicator(0);
+        });
+    </script>
+</body>
+</html>

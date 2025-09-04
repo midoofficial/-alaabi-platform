@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>التعلّم | ألعابي</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header id="site-header"></header>
+  <main class="container section">
+    <h1 class="section__title">مكتبة الدروس</h1>
+
+    <div class="kids-tabs" style="margin-bottom:1rem; display:flex; gap:.5rem; flex-wrap:wrap">
+      <button class="tab active" data-filter="all" style="padding:.6rem .9rem; border:2px solid #e5e7eb; border-radius:12px; cursor:pointer; background:#f8fafc; font-weight:800">الكل</button>
+      <button class="tab" data-filter="video" style="padding:.6rem .9rem; border:2px solid #e5e7eb; border-radius:12px; cursor:pointer; background:#f8fafc; font-weight:800">فيديوهات</button>
+      <button class="tab" data-filter="article" style="padding:.6rem .9rem; border:2px solid #e5e7eb; border-radius:12px; cursor:pointer; background:#f8fafc; font-weight:800">مقالات</button>
+      <button class="tab" data-filter="fav" style="padding:.6rem .9rem; border:2px solid #e5e7eb; border-radius:12px; cursor:pointer; background:#f8fafc; font-weight:800">المفضلة</button>
+    </div>
+
+    <div id="premium-lock" class="card hide" style="border:2px dashed #f59e0b;background:#fff8e1">هذه الصفحة للأعضاء المميزين فقط. الرجاء الاشتراك وتفعيل الحساب.</div>
+
+    <div id="lessons" class="feature-grid"></div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="/js/store.js"></script>
+  <script src="/data/seed.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    (function(){
+      const grid = document.getElementById('lessons');
+      const tabs = document.querySelectorAll('.kids-tabs .tab');
+      const favKey = 'fav-lessons';
+      function getFav(){ try{ return JSON.parse(localStorage.getItem(favKey)||'[]'); }catch{ return []; } }
+      function setFav(arr){ localStorage.setItem(favKey, JSON.stringify(arr)); }
+      function isFav(id){ return getFav().includes(id); }
+      function toggleFav(id){ const a=getFav(); const i=a.indexOf(id); if(i>=0) a.splice(i,1); else a.push(id); setFav(a); render(currentFilter); }
+      function videoEmbed(src){
+        if (!src) return '';
+        // YouTube
+        const yt = src.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/i);
+        if (yt) return `<div style="position:relative;padding-top:56%"><iframe src="https://www.youtube.com/embed/${yt[1]}" title="YouTube" style="position:absolute;inset:0;width:100%;height:100%" allowfullscreen loading="lazy"></iframe></div>`;
+        // Vimeo
+        const vimeo = src.match(/vimeo\.com\/(\d+)/i);
+        if (vimeo) return `<div style="position:relative;padding-top:56%"><iframe src="https://player.vimeo.com/video/${vimeo[1]}" title="Vimeo" style="position:absolute;inset:0;width:100%;height:100%" allowfullscreen loading="lazy"></iframe></div>`;
+        // Dailymotion
+        const dm = src.match(/dailymotion\.com\/video\/([\w-]+)/i);
+        if (dm) return `<div style="position:relative;padding-top:56%"><iframe src="https://www.dailymotion.com/embed/video/${dm[1]}" title="Dailymotion" style="position:absolute;inset:0;width:100%;height:100%" allowfullscreen loading="lazy"></iframe></div>`;
+        // Facebook or any embeddable iframe link
+        const fb = src.match(/facebook\.com\//i);
+        if (fb) return `<div style="position:relative;padding-top:56%"><iframe src="${src}" title="Facebook" style="position:absolute;inset:0;width:100%;height:100%" allowfullscreen loading="lazy"></iframe></div>`;
+        // Fallback: MP4 or data URL
+        return `<video src="${src}" controls style="width:100%;border-radius:12px"></video>`;
+      }
+      let currentFilter = 'all';
+      function render(filter){
+        const items = (window.AppStore?.all('lessons')) || [];
+        const list = items.filter(l=> filter==='all' ? true : filter==='fav' ? isFav(l.id) : l.type===filter);
+        grid.innerHTML = list.map(l => `
+          <article class="card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem">
+              <div>
+                <h3 style="margin:.25rem 0">${l.title} <small class="badge">${l.ageRange}</small></h3>
+                <p class="muted" style="margin:.25rem 0">${l.topic||''}</p>
+                ${l.desc? `<p>${l.desc}</p>`: ''}
+              </div>
+              <button class="btn" data-fav="${l.id}">${isFav(l.id)?'★ مفضلة':'☆ أضف للمفضلة'}</button>
+            </div>
+            ${l.type==='video' ? (l.thumb ? `<img src="${l.thumb}" alt="thumb" style="width:100%;max-height:240px;object-fit:cover;border-radius:12px">` : '') + videoEmbed(l.src) : ''}
+            ${l.type==='article' ? (l.thumb ? `<img src="${l.thumb}" alt="thumb" style="width:100%;max-height:240px;object-fit:cover;border-radius:12px">` : '') + (l.content? `<div style="margin-top:.5rem">${l.content}</div>` : `<p style="margin-top:.5rem">${l.src||''}</p>`) : ''}
+          </article>`).join('');
+        grid.querySelectorAll('button[data-fav]')?.forEach(b=> b.addEventListener('click', ()=> toggleFav(b.getAttribute('data-fav'))));
+      }
+      tabs.forEach(t=> t.addEventListener('click', ()=>{ tabs.forEach(x=>x.classList.remove('active')); t.classList.add('active'); currentFilter = t.dataset.filter; render(currentFilter); }));
+      render(currentFilter);
+    })();
+  </script>
+</body>
+</html>

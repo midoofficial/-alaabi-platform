@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تعلم رياض الأطفال | ألعابي</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    .kids-tabs { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.75rem }
+    .kids-tabs .tab { padding:.6rem .9rem; border:2px solid #e5e7eb; border-radius:12px; cursor:pointer; background:#f8fafc; font-weight:800 }
+    .kids-tabs .tab.active, .kids-tabs .tab:focus { background:#eef2ff; border-color:#c7d2fe; color:#4338ca }
+    .kids-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(64px,1fr)); gap:.5rem }
+    .kids-btn { display:flex; align-items:center; justify-content:center; background:#ffffff; border:2px solid #e5e7eb; border-radius:14px; padding:.6rem; font-size:28px; font-weight:800; cursor:pointer; box-shadow:var(--shadow) }
+    .kids-btn:hover { background:#f1f5f9 }
+    .kids-note { font-size:.95rem; color:#334155 }
+  </style>
+</head>
+<body>
+  <header id="site-header"></header>
+  <main class="container section">
+    <h1 class="section__title">تعلم رياض الأطفال</h1>
+
+    <div class="card" style="margin-bottom:1rem">
+      <h2 class="game__prompt">اختر المجموعة</h2>
+      <div class="kids-tabs" id="kids-tabs">
+        <button class="tab active" data-key="ar-letters">حروف عربية</button>
+        <button class="tab" data-key="en-letters">حروف إنجليزية</button>
+        <button class="tab" data-key="ar-numbers">أرقام عربية</button>
+        <button class="tab" data-key="en-numbers">أرقام إنجليزية</button>
+        <button class="tab" data-key="shapes">أشكال وأشياء</button>
+      </div>
+      <p class="kids-note">اضغط على الحرف/الرقم لسماع نُطقه.</p>
+    </div>
+
+    <div class="card" style="margin-bottom:1rem">
+      <h2 class="game__prompt" style="margin-bottom:.25rem">تقدم الطفل</h2>
+      <div id="kids-progress" class="kids-note">محاولات: 0 · صحيحة: 0</div>
+    </div>
+
+    <section class="card">
+      <h2 class="game__prompt" id="kids-title">حروف عربية</h2>
+      <div id="kids-grid" class="kids-grid"></div>
+    </section>
+
+    <section class="card" id="card-hear">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
+        <h2 class="game__prompt" style="margin:0">اسمع واختر</h2>
+        <label class="kids-note" style="display:flex;align-items:center;gap:.4rem">المستوى:
+          <select id="hear-diff" style="padding:.4rem .5rem;border:2px solid #e5e7eb;border-radius:.6rem">
+            <option value="easy">سهل</option>
+            <option value="medium" selected>متوسط</option>
+            <option value="hard">صعب</option>
+          </select>
+        </label>
+      </div>
+      <div class="form__actions" style="margin-bottom:.5rem">
+        <button id="hear-play" class="btn btn--primary btn--lg">▶ اسمع</button>
+      </div>
+      <div id="hear-opts" class="kids-grid"></div>
+    </section>
+
+    <section class="card" id="card-order">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
+        <h2 class="game__prompt" style="margin:0">رتّب الأرقام تصاعديًا</h2>
+        <span class="kids-note" id="order-hint"></span>
+      </div>
+      <div id="order-bank" class="game__area" style="display:flex;gap:.5rem;flex-wrap:wrap"></div>
+      <div class="form__actions" style="margin-top:.5rem">
+        <button id="order-check" class="btn btn--primary btn--lg">تحقّق</button>
+        <button id="order-next" class="btn btn--ghost btn--lg">جولة جديدة</button>
+      </div>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+
+  <script src="/js/store.js"></script>
+  <script src="/data/seed.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    (function(){
+      const T = document.getElementById('kids-title');
+      const G = document.getElementById('kids-grid');
+      const Tabs = document.getElementById('kids-tabs');
+      const setActive = (btn)=>{ Array.from(Tabs.querySelectorAll('.tab')).forEach(b=>b.classList.toggle('active', b===btn)); };
+
+      const data = {
+        'ar-letters': {
+          title: 'حروف عربية', lang: 'ar-SA', type: 'letters', items: ['أ','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','هـ','و','ي']
+        },
+        'en-letters': {
+          title: 'English Letters', lang: 'en-US', type: 'letters', items: Array.from({length:26}, (_,i)=> String.fromCharCode(65+i))
+        },
+        'ar-numbers': {
+          title: 'أرقام عربية', lang: 'ar-SA', type: 'numbers', items: ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩']
+        },
+        'en-numbers': {
+          title: 'English Numbers', lang: 'en-US', type: 'numbers', items: ['0','1','2','3','4','5','6','7','8','9']
+        },
+        'shapes': {
+          title: 'أشكال وأشياء', lang: 'ar-SA', type: 'shapes',
+          groups: {
+            animals: { title:'حيوانات', items: '🐶 🐱 🐭 🐹 🐰 🐻 🐼 🦁 🐯 🐮 🐷 🐸 🐵 🐔 🐧 🐦'.split(' ') },
+            fruits: { title:'فواكه', items: '🍎 🍏 🍌 🍇 🍓 🥝 🍒 🍍 🍉 🍑'.split(' ') },
+            plants: { title:'نباتات', items: '🌵 🌴 🌲 🌳 🌿 ☘️ 🍀 🌷 🌸 🌹'.split(' ') },
+            transport: { title:'مواصلات', items: '🚗 🚌 🚑 🚒 🚜 🚲 🛴 🚂 ✈️ 🚁 ⛵'.split(' ') }
+          }
+        }
+      };
+
+      let currentKey = (function(){ try{ return localStorage.getItem('kids-tab')||'ar-letters'; }catch{ return 'ar-letters'; } })();
+      // ensure voices are loaded before first speak
+      try { window.speechSynthesis?.getVoices(); window.speechSynthesis?.onvoiceschanged = ()=>{}; } catch {}
+
+      function speak(text, lang){
+        try {
+          // Arabic-friendly mapping for single letters/digits
+          const arLetterNames = { 'أ':'ألف','ا':'ألف','ب':'باء','ت':'تاء','ث':'ثاء','ج':'جيم','ح':'حاء','خ':'خاء','د':'دال','ذ':'ذال','ر':'راء','ز':'زاي','س':'سين','ش':'شين','ص':'صاد','ض':'ضاد','ط':'طاء','ظ':'ظاء','ع':'عين','غ':'غين','ف':'فاء','ق':'قاف','ك':'كاف','ل':'لام','م':'ميم','ن':'نون','ه':'هاء','هـ':'هاء','و':'واو','ي':'ياء' };
+          const arDigits = '٠١٢٣٤٥٦٧٨٩'.split('');
+          const arDigitNames = ['صفر','واحد','اثنان','ثلاثة','أربعة','خمسة','ستة','سبعة','ثمانية','تسعة'];
+          // Emoji names (subset used)
+          const emojiNames = {
+            '🐶':'كلب','🐱':'قطة','🐭':'فأر','🐹':'هامستر','🐰':'أرنب','🐻':'دب','🐼':'باندا','🦁':'أسد','🐯':'نمر','🐮':'بقرة','🐷':'خنزير','🐸':'ضفدع','🐵':'قرد','🐔':'دجاجة','🐧':'بطريق','🐦':'عصفور',
+            '🍎':'تفاحة','🍏':'تفاح أخضر','🍌':'موز','🍇':'عنب','🍓':'فراولة','🥝':'كيوي','🍒':'كرز','🍍':'أناناس','🍉':'بطيخ','🍑':'خوخ',
+            '🌵':'صبار','🌴':'نخلة','🌲':'شجرة صنوبر','🌳':'شجرة','🌿':'نبات','☘️':'نفل','🍀':'نفل','🌷':'زهرة','🌸':'زهرة','🌹':'وردة',
+            '🚗':'سيارة','🚌':'حافلة','🚑':'إسعاف','🚒':'إطفاء','🚜':'جرار','🚲':'دراجة','🛴':'سكوتر','🚂':'قطار','✈️':'طائرة','🚁':'هليكوبتر','⛵':'قارب'
+          };
+          let toSpeak = text;
+          if ((lang||'').startsWith('ar')){
+            if (arLetterNames[text]) toSpeak = arLetterNames[text];
+            else if (/^[\u0660-\u0669]$/.test(text)) toSpeak = arDigitNames[arDigits.indexOf(text)] || text;
+            else if (emojiNames[text]) toSpeak = emojiNames[text];
+          }
+          const u = new SpeechSynthesisUtterance(toSpeak);
+          u.lang = lang || 'ar-SA';
+          u.rate = 0.9; u.pitch = 1; u.volume = 1;
+          // Prefer an Arabic voice if available
+          const vs = speechSynthesis.getVoices?.() || [];
+          const v = vs.find(v=> v.lang?.toLowerCase().startsWith((lang||'ar-SA').toLowerCase().slice(0,2))) || vs.find(v=> v.lang?.toLowerCase().includes('ar'));
+          if (v) u.voice = v;
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(u);
+        } catch (e) {
+          // Fallback: short tone
+          try {
+            const ctx = new (window.AudioContext||window.webkitAudioContext)();
+            const o = ctx.createOscillator(); const g = ctx.createGain();
+            o.type='sine'; o.frequency.value=520; o.connect(g); g.connect(ctx.destination);
+            g.gain.setValueAtTime(0.001, ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime+0.02);
+            o.start();
+            g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.25);
+            o.stop(ctx.currentTime+0.3);
+          } catch {}
+        }
+      }
+
+      const P = { tries: 0, correct: 0 };
+      function saveProgress(ok){ try{ P.tries++; if(ok) P.correct++; localStorage.setItem('kids-progress', JSON.stringify(P)); updateProgress(); }catch{} }
+      function updateProgress(){ try{ const s = localStorage.getItem('kids-progress'); if(s){ const obj=JSON.parse(s); P.tries=obj.tries||0; P.correct=obj.correct||0; } }catch{}; const el=document.getElementById('kids-progress'); if(el) el.textContent = `محاولات: ${P.tries} · صحيحة: ${P.correct}`; }
+
+      function render(key){
+        const cfg = data[key]; if(!cfg) return;
+        T.textContent = cfg.title;
+        G.innerHTML='';
+        if (cfg.type === 'shapes'){
+          // Render grouped shapes
+          Object.keys(cfg.groups).forEach(gk=>{
+            const box = document.createElement('div'); box.className='card'; box.style.padding='.5rem';
+            const h = document.createElement('h3'); h.className='game__prompt'; h.textContent = cfg.groups[gk].title; box.appendChild(h);
+            const wrap = document.createElement('div'); wrap.className='kids-grid'; box.appendChild(wrap);
+            cfg.groups[gk].items.forEach(sym=>{
+              const b = document.createElement('button'); b.className='kids-btn'; b.textContent = sym; b.setAttribute('aria-label', cfg.groups[gk].title);
+              b.addEventListener('click', ()=> kidsSpeak(sym, cfg.lang)); wrap.appendChild(b);
+            });
+            G.appendChild(box);
+          });
+        } else {
+          cfg.items.forEach(v => {
+            const b = document.createElement('button');
+            b.className = 'kids-btn';
+            b.textContent = v;
+            b.addEventListener('click', ()=> kidsSpeak(v, cfg.lang));
+            G.appendChild(b);
+          });
+        }
+        toggleGames(cfg.type);
+        // refresh round content for dependent games
+        try { window.kidsHearNewRound?.(); } catch {}
+        try { window.kidsOrderNewRound?.(); } catch {}
+      }
+
+      function toggleGames(type){
+        document.getElementById('card-hear').style.display = (type==='letters' || type==='numbers') ? '' : 'none';
+        document.getElementById('card-order').style.display = (type==='numbers') ? '' : 'none';
+      }
+
+      // Force preferred Arabic voice globally for kids tabs
+      (function enforceArabicVoice(){
+        const preferred = (lang)=> (lang||'ar-SA');
+        const origSpeak = speak;
+        window.kidsSpeak = (t,l)=> {
+          // trigger voices load once (some browsers require it after a user gesture)
+          try { window.speechSynthesis?.getVoices(); } catch {}
+          origSpeak(t, preferred(l));
+        };
+      })();
+
+      // Hear & Choose game
+      (function hearGame(){
+        const btnPlay = document.getElementById('hear-play');
+        const opts = document.getElementById('hear-opts');
+        const diffSel = document.getElementById('hear-diff');
+        let target = null;
+        function sample(arr, n){ const a = arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a.slice(0,n); }
+        function choiceCount(){ const v = diffSel?.value||'medium'; return v==='easy'?3 : v==='hard'?8 : 5; }
+        function newRound(){
+          const cfg = data[currentKey]; if(!cfg) return;
+          const pool = cfg.items;
+          const choices = sample(pool, Math.min(choiceCount(), pool.length));
+          target = choices[Math.floor(Math.random()*choices.length)];
+          opts.innerHTML='';
+          choices.forEach(c=>{
+            const b = document.createElement('button'); b.className='btn btn--lg'; b.textContent=c; b.style.fontSize='24px';
+            b.addEventListener('click', ()=>{
+              const ok = c===target;
+              saveProgress(ok);
+              alert(ok?'أحسنت!':'ليست صحيحة.');
+              try{ const uid = localStorage.getItem('currentUserId'); AppStore.push('sessions', { id: AppStore.nextId('g'), userId: uid||null, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), score: ok?100:0, game:'kids-hear' }); }catch{}
+              if (ok) newRound();
+            });
+            opts.appendChild(b);
+          });
+        }
+        btnPlay.addEventListener('click', ()=>{ const cfg=data[currentKey]; if(!cfg) return; kidsSpeak(target||' ', cfg.lang); });
+        diffSel?.addEventListener('change', ()=> newRound());
+        // expose restart on tab change
+        window.kidsHearNewRound = newRound;
+      })();
+
+      // Order Numbers Asc game
+      (function orderNums(){
+        const bank = document.getElementById('order-bank');
+        const btnCheck = document.getElementById('order-check');
+        const btnNext = document.getElementById('order-next');
+        const hint = document.getElementById('order-hint');
+        const arDigits = '٠١٢٣٤٥٦٧٨٩'.split('');
+        function toVal(ch, key){
+          if (key==='ar-numbers') return arDigits.indexOf(ch);
+          return parseInt(ch,10);
+        }
+        function newRound(){
+          const cfg = data[currentKey]; if(!cfg || cfg.type!=='numbers') { bank.innerHTML=''; if(hint) hint.textContent=''; return; }
+          bank.innerHTML='';
+          const pool = cfg.items.slice(0,10);
+          const count = 4 + Math.floor(Math.random()*3); // 4..6
+          const set = [];
+          while(set.length<count){ const v = pool[Math.floor(Math.random()*pool.length)]; if(!set.includes(v)) set.push(v); }
+          const answer = set.slice().sort((a,b)=> toVal(a,currentKey)-toVal(b,currentKey));
+          if (hint) hint.textContent = `ضع الأرقام من الأصغر إلى الأكبر (${answer[0]} ... ${answer[answer.length-1]})`;
+          // shuffle
+          set.sort(()=>Math.random()-0.5);
+          set.forEach(v=>{
+            const chip = document.createElement('div'); chip.className='btn'; chip.textContent=v; chip.draggable=true; chip.style.userSelect='none'; chip.style.minWidth='56px'; chip.style.fontSize='22px'; chip.style.background='#eef2ff'; chip.style.color='#1e293b';
+            chip.addEventListener('dragstart',(e)=>{ e.dataTransfer.setData('text/plain', v); });
+            chip.addEventListener('dragover',(e)=>e.preventDefault());
+            chip.addEventListener('drop',(e)=>{ e.preventDefault(); const n = e.dataTransfer.getData('text/plain'); if(n && n!==v){ const t = chip.textContent; chip.textContent=n; const src = Array.from(bank.children).find(x=>x.textContent===n && x!==chip); if(src) src.textContent=t; }});
+            bank.appendChild(chip);
+          });
+        }
+        btnCheck.addEventListener('click', ()=>{
+          const cfg = data[currentKey]; if(!cfg || cfg.type!=='numbers') return;
+          const arr = Array.from(bank.children).map(x=>x.textContent);
+          const sorted = arr.slice().sort((a,b)=> toVal(a,currentKey)-toVal(b,currentKey));
+          const ok = JSON.stringify(arr) === JSON.stringify(sorted);
+          alert(ok?'ترتيب صحيح!':'الترتيب غير صحيح.');
+          try{ const uid = localStorage.getItem('currentUserId'); AppStore.push('sessions', { id: AppStore.nextId('g'), userId: uid||null, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), score: ok?100:0, game:'kids-order-nums' }); }catch{}
+        });
+        btnNext.addEventListener('click', newRound);
+        window.kidsOrderNewRound = newRound;
+      })();
+
+      Tabs.addEventListener('click', (e)=>{
+        const btn = e.target.closest('.tab'); if(!btn) return;
+        setActive(btn);
+        currentKey = btn.dataset.key;
+        try{ localStorage.setItem('kids-tab', currentKey); }catch{}
+        render(currentKey);
+        try{ window.kidsHearNewRound?.(); }catch{}
+        try{ window.kidsOrderNewRound?.(); }catch{}
+      });
+
+      // initial
+      updateProgress();
+      // sync initial active tab button
+      try{ const btn = Tabs.querySelector(`.tab[data-key="${currentKey}"]`); if(btn) setActive(btn); }catch{}
+      render(currentKey);
+      try{ window.kidsHearNewRound?.(); }catch{}
+      try{ window.kidsOrderNewRound?.(); }catch{}
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>لوحة المدير | ألعابي</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header id="site-header"></header>
+  <main class="container section">
+    <h1 class="section__title">لوحة المدير</h1>
+    <div class="form__actions" style="justify-content:flex-end;margin-bottom:.5rem">
+      <a id="admin-logout" class="btn btn--ghost" href="#">🚪 خروج</a>
+    </div>
+    <p>أدخلت البيانات محليًا. يمكنك تصدير/استيراد JSON. المستخدم الافتراضي: admin@example.com / 123456</p>
+
+    <nav class="menu" style="margin:.5rem 0">
+      <a href="#" data-tab="users" class="active">المستخدمون</a>
+      <a href="#" data-tab="subscriptions">الاشتراكات</a>
+      <a href="#" data-tab="bookings">الحجوزات</a>
+      <a href="#" data-tab="lessons">الدروس</a>
+      <a href="#" data-tab="questions">الأسئلة</a>
+      <a href="#" data-tab="data">البيانات</a>
+      <a href="#" data-tab="settings">الإعدادات</a>
+    </nav>
+
+    <section id="tab-users" class="card">
+      <h2>إدارة المستخدمين</h2>
+      <form id="user-form" class="form" style="margin-bottom:1rem">
+        <input type="hidden" name="id" />
+        <div class="form__field"><label>الاسم</label><input name="name" required></div>
+        <div class="form__field"><label>البريد</label><input name="email" type="email" required></div>
+        <div class="form__field"><label>الدور</label><select name="role"><option value="user">مستخدم</option><option value="admin">مدير</option></select></div>
+        <div class="form__field"><label>مفعّل؟</label><select name="active"><option value="true">نعم</option><option value="false">لا</option></select></div>
+        <div class="form__actions"><button class="btn btn--primary">حفظ</button></div>
+      </form>
+      <div id="users-list"></div>
+    </section>
+
+    <section id="tab-subscriptions" class="card hide">
+      <h2>طلبات الاشتراك</h2>
+      <form id="sub-form" class="form" style="margin-bottom:1rem">
+        <input type="hidden" name="id" />
+        <div class="form__field"><label>مستخدم</label><select name="userId" id="sub-user"></select></div>
+        <div class="form__field"><label>البريد</label><input name="email" type="email" placeholder="اختياري"></div>
+        <div class="form__field"><label>الحالة</label><select name="status"><option value="مقبول">مقبول</option><option value="مرفوض">مرفوض</option><option value="بانتظار">بانتظار</option></select></div>
+        <div class="form__actions"><button class="btn btn--primary">حفظ</button></div>
+      </form>
+      <div id="subs-list"></div>
+    </section>
+
+    <section id="tab-bookings" class="card hide">
+      <h2>طلبات الحجز</h2>
+      <div id="bookings-list"></div>
+    </section>
+
+    <section id="tab-lessons" class="card hide">
+      <h2>إدارة الدروس</h2>
+      <form id="lesson-form" class="form">
+        <input type="hidden" name="id" />
+        <div class="form__field"><label>العنوان</label><input name="title" required></div>
+        <div class="form__field"><label>الفئة العمرية</label><select name="ageRange"><option>3-5</option><option>6-8</option><option>9-12</option><option>13-15</option></select></div>
+        <div class="form__field"><label>الموضوع</label><input name="topic"></div>
+        <div class="form__field"><label>النوع</label><select name="type"><option value="video">فيديو</option><option value="article">مقال</option></select></div>
+        <div class="form__field form__field--full"><label>وصف مختصر</label><textarea name="desc" rows="2" placeholder="سطر أو سطران"></textarea></div>
+        <div class="form__field form__field--full"><label>المصدر/الرابط (YouTube/Vimeo/Dailymotion/MP4 أو رابط المقال)</label><input name="src" placeholder="https://..."></div>
+        <div class="form__field form__field--full"><label>رفع فيديو (اختياري)</label><input type="file" accept="video/*" name="srcFile"></div>
+        <fieldset class="form__field form__field--full" style="border:1px dashed #cbd5e1;border-radius:12px;padding:.75rem">
+          <legend>صورة توضيحية (اختياري)</legend>
+          <label>رابط صورة</label><input name="thumb" placeholder="https://...">
+          <label>رفع صورة</label><input type="file" accept="image/*" name="thumbFile">
+        </fieldset>
+        <div class="form__field form__field--full"><label>محتوى المقال (اختياري)</label><textarea name="content" rows="4" placeholder="نص المقال"></textarea></div>
+        <div class="form__actions"><button class="btn btn--primary">حفظ</button></div>
+      </form>
+      <div id="lessons-list" style="margin-top:1rem"></div>
+    </section>
+
+    <section id="tab-questions" class="card hide">
+      <h2>إدارة الأسئلة</h2>
+      <form id="question-form" class="form" enctype="multipart/form-data">
+        <input type="hidden" name="id" />
+        <div class="form__field"><label>الفئة العمرية</label><select name="ageRange"><option>3-5</option><option>6-8</option><option>9-12</option><option>13-15</option></select></div>
+        <div class="form__field"><label>المهارة</label><select name="skill"><option>معرفية</option><option>لغوية</option><option>حركية</option><option>اجتماعية</option></select></div>
+        <div class="form__field"><label>المستوى</label><input name="level" type="number" min="1" max="5" value="1"></div>
+        <div class="form__field form__field--full"><label>النص</label><input name="prompt" required></div>
+        <div class="form__field"><label>النوع</label><select name="type"><option value="mcq">اختيار من متعدد</option><option value="tf">صح/خطأ</option></select></div>
+        <div class="form__field form__field--full"><label>الخيارات (CSV)</label><input name="options" placeholder="لـ MCQ: فواصل"/></div>
+        <div class="form__field"><label>الإجابة (فهرس أو true/false)</label><input name="answer" required></div>
+        <div class="form__field form__field--full"><label>تفسير مبسّط</label><input name="explain"></div>
+        <fieldset class="form__field form__field--full" style="border:1px dashed #cbd5e1;border-radius:12px;padding: .75rem;">
+          <legend>وسائط (اختياري)</legend>
+          <label>رابط صورة</label><input name="imageUrl" placeholder="https://...">
+          <label>رفع صورة</label><input type="file" accept="image/*" name="imageFile">
+          <label>رابط صوت</label><input name="audioUrl" placeholder="https://...">
+          <label>رفع صوت</label><input type="file" accept="audio/*" name="audioFile">
+          <label>رابط فيديو (YouTube/Vimeo/MP4)</label><input name="videoUrl" placeholder="https://...">
+        </fieldset>
+        <div class="form__actions"><button class="btn btn--primary">حفظ</button></div>
+      </form>
+      <div id="questions-list" style="margin-top:1rem"></div>
+    </section>
+
+    <section id="tab-data" class="card hide">
+      <h2>البيانات (تصدير/استيراد)</h2>
+      <div class="form">
+        <div class="form__field form__field--full"><textarea id="data-json" rows="8" placeholder="الصق JSON هنا"></textarea></div>
+        <div class="form__actions"><button id="btn-export" class="btn btn--ghost" type="button">تصدير JSON</button><button id="btn-import" class="btn btn--primary" type="button">استيراد JSON</button></div>
+      </div>
+      <hr/>
+      <div class="form" style="margin-top:1rem">
+        <div class="form__field"><label>تصدير CSV لـ</label>
+          <select id="csv-key">
+            <option value="subscriptions">الاشتراكات</option>
+            <option value="bookings">الحجوزات</option>
+            <option value="contacts">التواصل</option>
+            <option value="sessions">نتائج الجلسات</option>
+          </select>
+        </div>
+        <div class="form__actions"><button id="btn-export-csv" class="btn btn--ghost" type="button">تصدير CSV</button></div>
+        <div class="form__field form__field--full"><textarea id="data-csv" rows="6" placeholder="سيظهر CSV هنا لنسخه"></textarea></div>
+      </div>
+    </section>
+
+    <section id="tab-settings" class="card hide">
+      <h2>الإعدادات</h2>
+      <div class="card" style="margin-bottom:1rem">
+        <h3>إعدادات الموقع</h3>
+        <form id="site-settings" class="form">
+          <div class="form__field"><label>اسم الموقع</label><input name="siteName" placeholder="ألعابي مع الأخصائية ميرنا السيد"></div>
+          <div class="form__field form__field--full"><label>وصف قصير</label><input name="siteDesc" placeholder="منصّة تعليمية عربية آمنة وممتعة للأطفال"></div>
+          <div class="form__field"><label>واتساب</label><input name="whatsapp" placeholder="https://wa.me/..."/></div>
+          <div class="form__field"><label>فيسبوك</label><input name="facebook" placeholder="https://facebook.com/..."/></div>
+          <div class="form__field"><label>هاتف</label><input name="phone" placeholder="+201234567890"/></div>
+          <div class="form__field"><label>بريد الإدارة</label><input name="email" type="email" placeholder="admin@example.com"/></div>
+          <div class="form__field form__field--full"><label>شعار الموقع (رابط)</label><input name="siteLogo" placeholder="https://... أو اتركه فارغًا"></div>
+          <div class="form__field form__field--full"><label>رفع شعار</label><input type="file" accept="image/*" name="siteLogoFile"></div>
+          <div class="form__field form__field--full"><label>رابط الفيديو الترحيبي (YouTube/Vimeo/Dailymotion/MP4)</label><input name="heroVideo" placeholder="https://..."></div>
+          <div class="form__field form__field--full"><label>صورة مصغّرة للفيديو الترحيبي (رابط)</label><input name="heroPoster" placeholder="https://..."></div>
+          <div class="form__field form__field--full"><label>رفع صورة مصغّرة للفيديو الترحيبي</label><input type="file" accept="image/*" name="heroPosterFile"></div>
+          <div class="form__field form__field--full"><label>صورة صفحة عنّي (رابط)</label><input name="aboutPhoto"></div>
+          <div class="form__field form__field--full"><label>رفع صورة عنّي</label><input type="file" accept="image/*" name="aboutPhotoFile"></div>
+          <div class="form__field form__field--full"><label>صورة صفحة التواصل (رابط)</label><input name="contactPhoto"></div>
+          <div class="form__field form__field--full"><label>رفع صورة التواصل</label><input type="file" accept="image/*" name="contactPhotoFile"></div>
+          <div class="form__field"><label>لون رئيسي</label><input name="primaryColor" type="color" value="#6d28d9"></div>
+          <div class="form__field"><label>لون مساعد</label><input name="accentColor" type="color" value="#ef4444"></div>
+          <div class="form__field"><label>استدارة الحواف</label><input name="radius" type="number" min="0" max="24" value="12"></div>
+          <div class="form__field"><label>إظهار البوت افتراضياً</label><select name="botHiddenDefault"><option value="false">نعم، أظهره</option><option value="true">لا، أخفه</option></select></div>
+          <div class="form__actions"><button class="btn btn--primary">حفظ</button></div>
+        </form>
+      </div>
+      <div class="card">
+        <h3>إعدادات الوصول</h3>
+        <label style="display:flex;gap:.5rem;align-items:center"><input id="set-bot" type="checkbox"> تفعيل البوت</label>
+        <label style="display:flex;gap:.5rem;align-items:center"><input id="set-motion" type="checkbox"> تقليل الحركة</label>
+      </div>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="/js/store.js"></script>
+  <script src="/data/seed.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

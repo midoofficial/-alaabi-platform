@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://your-site.netlify.app/sitemap.xml
+
+# Disallow admin pages from search engines
+Disallow: /pages/admin/
+
+# Allow all other pages
+Allow: /pages/learning/
+Allow: /pages/activities/
+Allow: /pages/about/
+Allow: /pages/contact/
+Allow: /pages/skills/
+Allow: /pages/tests/

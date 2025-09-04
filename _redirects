@@ -1,0 +1,15 @@
+# Clean URLs - redirect from clean paths to actual HTML files
+/learning /pages/learning/index.html 200
+/kids /pages/learning/kids.html 200
+/activities /pages/activities/index.html 200
+/admin /pages/admin/index.html 200
+/about /pages/about/index.html 200
+/contact /pages/contact/index.html 200
+/skills /pages/skills/index.html 200
+/tests /pages/tests/index.html 200
+
+# Fallback for SPA-like behavior (optional)
+/pages/* /pages/:splat 200
+
+# 404 fallback
+/* /index.html 404

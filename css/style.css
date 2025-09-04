@@ -1,0 +1,149 @@
+/*
+  ألعابي مع الأخصائية ميرنا السيد - أنماط عامة
+  - دعم RTL
+  - ألوان مبهجة مناسبة للأطفال
+  - تصميم متجاوب
+*/
+:root {
+  --c-primary: #4cc9f0;
+  --c-primary-dark: #3a86ff;
+  --c-secondary: #ffafcc;
+  --c-accent: #ffd166;
+  --c-success: #2ec4b6;
+  --c-danger: #ef476f;
+  --c-bg: #fffaf5;
+  --c-surface: #ffffff;
+  --c-text: #19323c;
+  --radius: 16px;
+  --shadow: 0 6px 20px rgba(0,0,0,.08);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; font-family: "Cairo", "Tajawal", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: linear-gradient(180deg, #fffdf8 0%, #fffaf5 40%, #fff 100%); color: var(--c-text); line-height: 1.7;
+}
+img, video { max-width: 100%; display: block; }
+.container { width: min(1100px, 92%); margin: 0 auto; }
+.section { padding: 3rem 0; }
+.section__title { font-size: 1.6rem; margin: 0 0 1rem; }
+
+/* Header */
+.header {
+  position: sticky; top: 0; z-index: 20; background: var(--c-surface); box-shadow: var(--shadow);
+}
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .75rem 0; }
+.brand { display: flex; align-items: center; gap: .5rem; font-weight: 800; color: var(--c-primary-dark); text-decoration: none; }
+.brand__logo { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary)); display: inline-block; }
+.brand__logo-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary)); }
+.menu { display: flex; gap: .5rem; flex-wrap: wrap; }
+.menu a { text-decoration: none; color: var(--c-text); padding: .5rem .8rem; border-radius: 999px; }
+.menu a.active, .menu a:hover { background: var(--c-primary); color: white; }
+.menu a.logout { background: #ffe4e6; color: #b91c1c; border: 1px solid #fecaca; }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: 1.2fr .8fr; gap: 1.5rem; align-items: center; padding: 2rem 0; }
+.hero__cta { display: flex; gap: .75rem; margin-top: 1rem; flex-wrap: wrap; }
+.video { border-radius: var(--radius); box-shadow: var(--shadow); background: #000; }
+
+/* Cards */
+.card { background: var(--c-surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem; text-decoration: none; color: inherit; transition: transform .2s ease; }
+.card:hover { transform: translateY(-3px); }
+.age-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.age { text-align: center; padding: 1.2rem; }
+.age__title { display: block; font-size: 1.2rem; font-weight: 800; }
+.age--a3 { background: #e8f7ff; }
+.age--a6 { background: #fff0f6; }
+.age--a9 { background: #f1fff4; }
+.age--a13 { background: #fffbea; }
+
+.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+
+/* Buttons */
+.btn { border: 0; border-radius: 14px; padding: .7rem 1.2rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; box-shadow: 0 6px 16px rgba(0,0,0,.08); transition: transform .15s ease, box-shadow .15s ease; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.12); }
+.btn--primary { background: linear-gradient(135deg, var(--c-primary-dark), #7c3aed); color: white; }
+.btn--ghost { background: #f8fafc; color: var(--c-primary-dark); border: 2px solid #e2e8f0; }
+.btn--whatsapp { background: #25D366; color: #fff; }
+.btn--call { background: var(--c-success); color: #fff; }
+.btn--fb { background: #1877f2; color: #fff; }
+.btn--lg { padding: .9rem 1.4rem; font-size: 1.1rem; border-radius: 16px; }
+
+/* Game prompts & media */
+.game__prompt { font-size: 1.35rem; font-weight: 800; line-height: 1.35; margin: .25rem 0 .5rem; }
+.game__img { width: 112px; height: 112px; object-fit: cover; border-radius: 14px; border: 3px solid #e2e8f0; box-shadow: var(--shadow); }
+.game__area { padding: .5rem; border-radius: 12px; background: #f8fafc; border: 1px dashed #cbd5e1; }
+
+/* Quick contact */
+.quick-contact { background: linear-gradient(90deg, var(--c-secondary), var(--c-accent)); padding: .75rem 0; }
+.quick-contact__wrap { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+
+/* Forms */
+.form { display: grid; gap: .75rem; grid-template-columns: repeat(2, 1fr); align-items: start; }
+.form__field { display: grid; gap: .35rem; }
+.form__field--full { grid-column: 1 / -1; }
+.form input, .form textarea, .form select { padding: .6rem .7rem; border-radius: .8rem; border: 2px solid #e5e7eb; background: #fff; }
+.form input:focus, .form textarea:focus, .form select:focus { outline: none; border-color: var(--c-primary-dark); box-shadow: 0 0 0 3px rgba(58,134,255,.15); }
+.form__actions { display: flex; gap: .6rem; align-items: center; }
+.success { color: #117a39; background: #e7f9ef; padding: .5rem .75rem; border-radius: .6rem; }
+
+/* Footer */
+.footer { background: #0f172a; color: #e2e8f0; padding: 2rem 0; margin-top: 2rem; }
+.footer a { color: #93c5fd; text-decoration: none; }
+.footer__grid { display: grid; gap: 1rem; grid-template-columns: repeat(3, 1fr); }
+
+/* Chatbot */
+.chatbot { position: fixed; bottom: 16px; left: 16px; z-index: 50; }
+.chatbot__panel { width: min(360px, 92vw); height: 420px; background: var(--c-surface); border-radius: 16px; box-shadow: var(--shadow); display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; }
+.chatbot__header { display: flex; align-items: center; justify-content: space-between; padding: .6rem .8rem; background: var(--c-primary); color: #fff; }
+.chatbot__log { padding: .75rem; overflow: auto; display: grid; gap: .5rem; background: #f8fbff; }
+.chatbot__msg { padding: .5rem .7rem; border-radius: 12px; max-width: 85%; }
+.chatbot__msg--user { background: #e6f0ff; margin-right: auto; }
+.chatbot__msg--bot { background: #fff; margin-left: auto; border: 1px dashed #cbd5e1; }
+.chatbot__input { display: flex; gap: .4rem; padding: .6rem; border-top: 1px solid #e5e7eb; }
+.chatbot__input input { flex: 1; padding: .6rem .7rem; border: 2px solid #e5e7eb; border-radius: .8rem; }
+
+/* Utilities */
+.grid { display: grid; }
+.hide { display: none !important; }
+.badge { display: inline-block; background: var(--c-accent); padding: .2rem .5rem; border-radius: .6rem; font-weight: 700; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .age-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer__grid { grid-template-columns: 1fr; }
+  .form { grid-template-columns: 1fr; }
+}
+
+/* Icons */
+.icon { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; color:#fff; font-size:16px; }
+.icon--video { background:#f97316; }
+.icon--skills { background:#10b981; }
+.icon--speech { background:#0ea5e9; }
+.icon-svg { width: 18px; height: 18px; margin-inline: .25rem; }
+
+/* Floating contact buttons */
+.fab { position: fixed; right: 16px; bottom: 16px; display: grid; gap: .5rem; z-index: 60; }
+.fab a { width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items:center; justify-content:center; box-shadow: var(--shadow); }
+.fab__wa { background:#25D366; color:#fff; }
+.fab__fb { background:#1877f2; color:#fff; }
+.fab__call { background: var(--c-success); color:#fff; }
+
+/* Header contacts */
+.header__contacts a { width:36px; height:36px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:#f1f5f9; border:1px solid #e2e8f0; color:#1f2937; }
+.header__contacts a:hover { background:#e2e8f0; }
+
+/* Toast */
+.toast { position: fixed; inset-inline-start: 16px; bottom: 16px; background: #111827; color:#fff; padding:.8rem 1rem; border-radius: 12px; box-shadow: var(--shadow); display:flex; align-items:center; gap:.5rem; z-index:70; }
+.toast__close { background: transparent; border:0; color:#fff; cursor:pointer; }
+
+/* Import contact styles */
+@import url('contact.css');
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

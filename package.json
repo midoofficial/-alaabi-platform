@@ -1,0 +1,43 @@
+{
+  "name": "alaabi-platform",
+  "version": "1.0.0",
+  "description": "منصة ألعابي مع الأخصائية ميرنا السيد - منصة تعليمية عربية للأطفال",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "python -m http.server 8000",
+    "build": "echo 'Static site - no build needed'",
+    "test": "echo 'Tests will be added later'",
+    "deploy": "echo 'Deploy to Netlify manually or via Git'"
+  },
+  "keywords": [
+    "arabic",
+    "education",
+    "children",
+    "games",
+    "learning",
+    "pwa",
+    "منصة تعليمية",
+    "ألعاب أطفال",
+    "تعليم عربي"
+  ],
+  "author": "الأخصائية ميرنا السيد",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR-USERNAME/alaabi-platform.git"
+  },
+  "homepage": "https://your-site.netlify.app",
+  "bugs": {
+    "url": "https://github.com/YOUR-USERNAME/alaabi-platform/issues"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ]
+}

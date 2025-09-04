@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحديث روابط الموقع - منصة ألعابي</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4cc9f0, #3a86ff);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="text"], input[type="url"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus, input[type="url"]:focus {
+            outline: none;
+            border-color: #4cc9f0;
+            box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.1);
+        }
+        .btn {
+            background: linear-gradient(135deg, #4cc9f0, #3a86ff);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.3);
+        }
+        .output {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            direction: ltr;
+            text-align: left;
+        }
+        .file-section {
+            background: #f8f9fa;
+            border-left: 4px solid #4cc9f0;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .file-section h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        .copy-btn:hover {
+            background: #218838;
+        }
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔗 تحديث روابط الموقع</h1>
+            <p>أداة سريعة لتحديث الروابط بعد النشر على Netlify</p>
+        </div>
+
+        <div class="content">
+            <div class="alert alert-info">
+                <strong>تعليمات:</strong> أدخل رابط موقعك الجديد على Netlify وسيتم إنشاء الكود المحدث لك
+            </div>
+
+            <div class="form-group">
+                <label for="siteUrl">رابط الموقع على Netlify:</label>
+                <input type="url" id="siteUrl" placeholder="https://your-site.netlify.app" />
+            </div>
+
+            <div class="form-group">
+                <label for="analyticsId">Google Analytics ID (اختياري):</label>
+                <input type="text" id="analyticsId" placeholder="G-XXXXXXXXXX" />
+            </div>
+
+            <button class="btn" onclick="generateUpdates()">إنشاء التحديثات</button>
+
+            <div id="results" style="display: none;">
+                <div class="alert alert-success">
+                    <strong>✅ تم إنشاء التحديثات!</strong> انسخ الكود أدناه واستبدله في الملفات المحددة
+                </div>
+
+                <div class="file-section">
+                    <h4>📄 index.html - Meta Tags</h4>
+                    <div class="output" id="indexHtml"></div>
+                    <button class="copy-btn" onclick="copyToClipboard('indexHtml')">نسخ الكود</button>
+                </div>
+
+                <div class="file-section">
+                    <h4>🤖 robots.txt</h4>
+                    <div class="output" id="robotsTxt"></div>
+                    <button class="copy-btn" onclick="copyToClipboard('robotsTxt')">نسخ الكود</button>
+                </div>
+
+                <div class="file-section">
+                    <h4>🗺️ sitemap.xml</h4>
+                    <div class="output" id="sitemapXml"></div>
+                    <button class="copy-btn" onclick="copyToClipboard('sitemapXml')">نسخ الكود</button>
+                </div>
+
+                <div class="file-section" id="analyticsSection" style="display: none;">
+                    <h4>📊 Google Analytics - ملفات JavaScript</h4>
+                    <div class="output" id="analyticsCode"></div>
+                    <button class="copy-btn" onclick="copyToClipboard('analyticsCode')">نسخ الكود</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateUpdates() {
+            const siteUrl = document.getElementById('siteUrl').value.trim();
+            const analyticsId = document.getElementById('analyticsId').value.trim();
+
+            if (!siteUrl) {
+                alert('يرجى إدخال رابط الموقع');
+                return;
+            }
+
+            // Ensure URL ends without slash
+            const cleanUrl = siteUrl.replace(/\/$/, '');
+
+            // Generate index.html meta tags
+            const indexHtml = `  <meta property="og:url" content="${cleanUrl}" />
+  <link rel="canonical" href="${cleanUrl}/" />`;
+
+            // Generate robots.txt
+            const robotsTxt = `User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: ${cleanUrl}/sitemap.xml
+
+# Disallow admin pages from search engines
+Disallow: /pages/admin/
+
+# Allow all other pages
+Allow: /pages/learning/
+Allow: /pages/activities/
+Allow: /pages/about/
+Allow: /pages/contact/
+Allow: /pages/skills/
+Allow: /pages/tests/`;
+
+            // Generate sitemap.xml
+            const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${cleanUrl}/</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${cleanUrl}/learning</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${cleanUrl}/kids</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${cleanUrl}/activities</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${cleanUrl}/about</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>${cleanUrl}/contact</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>${cleanUrl}/skills</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${cleanUrl}/tests</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>`;
+
+            // Update the output
+            document.getElementById('indexHtml').textContent = indexHtml;
+            document.getElementById('robotsTxt').textContent = robotsTxt;
+            document.getElementById('sitemapXml').textContent = sitemapXml;
+
+            // Handle Analytics if provided
+            if (analyticsId) {
+                const analyticsCode = `// في ملف index.html، استبدل GA_MEASUREMENT_ID بـ:
+${analyticsId}
+
+// في ملف js/analytics.js، ابحث عن GA_MEASUREMENT_ID واستبدله بـ:
+${analyticsId}
+
+// في ملف js/privacy-consent.js، ابحث عن GA_MEASUREMENT_ID واستبدله بـ:
+${analyticsId}`;
+
+                document.getElementById('analyticsCode').textContent = analyticsCode;
+                document.getElementById('analyticsSection').style.display = 'block';
+            } else {
+                document.getElementById('analyticsSection').style.display = 'none';
+            }
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                const btn = element.nextElementSibling;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ تم النسخ!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#28a745';
+                }, 2000);
+            }).catch(function(err) {
+                alert('فشل في نسخ النص. يرجى النسخ يدوياً.');
+            });
+        }
+
+        // Auto-fill if URL is in the address bar
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const siteUrl = urlParams.get('url');
+            if (siteUrl) {
+                document.getElementById('siteUrl').value = siteUrl;
+            }
+        });
+    </script>
+</body>
+</html>

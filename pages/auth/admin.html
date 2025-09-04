@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تسجيل دخول المدير | ألعابي</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header id="site-header"></header>
+  <main class="container section">
+    <h1 class="section__title">تسجيل دخول المدير</h1>
+    <form id="admin-login-form" class="form card">
+      <div class="form__field"><label>اسم المستخدم أو البريد</label><input type="text" name="email" placeholder="admin" required></div>
+      <div class="form__field"><label>كلمة المرور</label><input type="password" name="password" placeholder="••••••" required></div>
+      <div class="form__actions"><button class="btn btn--primary">دخول كمدير</button> <a href="/pages/auth/login.html">تسجيل دخول المستخدم</a></div>
+      <p class="muted" style="margin-top:.25rem">بيانات المدير الافتراضية: admin / 753159</p>
+      <p id="admin-login-msg" class="success" hidden></p>
+    </form>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="/js/store.js"></script>
+  <script src="/data/seed.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/auth.js"></script>
+</body>
+</html>

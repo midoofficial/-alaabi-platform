@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ألعابي مع الأخصائية ميرنا السيد</title>
+  <meta name="description" content="منصّة تعليمية عربية ممتعة وآمنة للأطفال (3–15 سنة). اختبارات، أنشطة، برامج سلوكية، وبوت ذكي صديق للأطفال." />
+  <meta property="og:title" content="ألعابي مع الأخصائية ميرنا السيد" />
+  <meta property="og:description" content="منصّة تعليمية عربية ممتعة وآمنة للأطفال (3–15 سنة)." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ar_AR" />
+  <meta property="og:image" content="/assets/imgs/hero-poster.png" />
+  <meta property="og:url" content="https://your-site.netlify.app" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ألعابي مع الأخصائية ميرنا السيد" />
+  <meta name="twitter:description" content="منصّة تعليمية عربية ممتعة وآمنة للأطفال (3–15 سنة)." />
+  <meta name="twitter:image" content="/assets/imgs/hero-poster.png" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="الأخصائية ميرنا السيد" />
+  <link rel="canonical" href="https://your-site.netlify.app/" />
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#4cc9f0" />
+  <link rel="icon" href="/assets/icons/icon-192.png" />
+  <link rel="preload" href="/css/style.css" as="style" />
+  <link rel="stylesheet" href="/css/style.css" />
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GA_MEASUREMENT_ID');
+  </script>
+  
+  <!-- Performance monitoring -->
+  <script>
+    // Performance monitoring
+    window.addEventListener('load', function() {
+      if ('performance' in window) {
+        const perfData = performance.getEntriesByType('navigation')[0];
+        console.log('Page load time:', perfData.loadEventEnd - perfData.fetchStart, 'ms');
+      }
+    });
+  </script>
+</head>
+<body>
+  <noscript>الرجاء تفعيل JavaScript لتعمل المنصّة بشكل صحيح.</noscript>
+  <header id="site-header"></header>
+
+  <main>
+    <!-- Hero / Intro -->
+    <section class="hero container">
+      <div class="hero__text">
+        <h1>ألعابي مع الأخصائية ميرنا السيد</h1>
+        <p>منصّة عربية آمنة وممتعة للأطفال من 3 إلى 15 سنة، للتعلّم باللعب، الاختبارات، وبرامج تعديل السلوك.</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="/pages/activities/index.html">ابدأ الأنشطة والألعاب</a>
+        </div>
+      </div>
+      <div class="hero__video" id="hero-video-wrap">
+        <video id="hero-video" controls preload="none" poster="/assets/imgs/hero-poster.png" class="video">
+          <source src="/assets/intro.mp4" type="video/mp4" />
+          متصفحك لا يدعم تشغيل الفيديو.
+        </video>
+      </div>
+    </section>
+
+    <!-- Highlights (modernized) -->
+    <section class="container section">
+      <h2 class="section__title">ماذا نقدّم؟</h2>
+      <div class="feature-grid">
+        <a class="card feature" href="/pages/activities/index.html">
+          <h3>الأنشطة</h3>
+          <p>ألعاب تفاعلية قصيرة ممتعة ومناسبة لكل الأعمار.</p>
+          <div class="icon icon--skills"><svg class="icon-svg"><use href="#i-controller"></use></svg></div>
+        </a>
+        <a class="card feature" href="/pages/skills/index.html">
+          <h3>الألعاب</h3>
+          <p>سحب وإفلات، مطابقة، ترتيب، ومنطق بسيط بواجهة مرحة.</p>
+          <div class="icon icon--speech"><svg class="icon-svg"><use href="#i-puzzle"></use></svg></div>
+        </a>
+        <a class="card feature" href="/pages/booking/index.html">
+          <h3>الاشتراك</h3>
+          <p>انضم الآن واستمتع بالمحتوى المميز والتحديثات الفورية.</p>
+          <div class="icon icon--video"><svg class="icon-svg"><use href="#i-star"></use></svg></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Quick Contact Bar -->
+    <section class="quick-contact">
+      <div class="container quick-contact__wrap">
+        <a class="btn btn--whatsapp" id="link-wa" href="#" target="_blank" rel="noopener">واتساب</a>
+        <a class="btn btn--call" id="link-call" href="#">اتصال</a>
+        <a class="btn btn--fb" id="link-fb" href="#" target="_blank" rel="noopener">فيسبوك</a>
+      </div>
+    </section>
+
+    <!-- Quick Subscribe Form -->
+    <section class="container section">
+      <h2 class="section__title">اشترك بسرعة</h2>
+      <form id="quick-subscribe-form" class="form grid">
+        <div class="form__field">
+          <label>اسم الطفل</label>
+          <input type="text" name="childName" required />
+        </div>
+        <div class="form__field">
+          <label>العمر</label>
+          <input type="number" name="age" min="3" max="15" required />
+        </div>
+        <div class="form__field">
+          <label>بيانات ولي الأمر (هاتف/بريد)</label>
+          <input type="text" name="guardianContact" required />
+        </div>
+        <div class="form__field form__field--full">
+          <label>ملاحظات</label>
+          <textarea name="notes" rows="2"></textarea>
+        </div>
+        <div class="form__actions">
+          <button class="btn btn--primary" type="submit">إرسال</button>
+          <a class="btn btn--ghost" href="/pages/booking/index.html">نموذج الحجز المتقدّم</a>
+        </div>
+        <p id="quick-subscribe-success" class="success" hidden>تم الإرسال بنجاح! تم حفظ الطلب محليًا.</p>
+      </form>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <!-- Chatbot Widget -->
+  <div id="chatbot-root"></div>
+
+  <script src="/js/store.js"></script>
+  <script src="/data/seed.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/forms.js"></script>
+  <script src="/js/bot.js"></script>
+  <script src="/js/analytics.js"></script>
+  <script src="/js/performance.js"></script>
+  <script src="/js/privacy-consent.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>الأنشطة | ألعابي</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header id="site-header"></header>
+  <main class="container section">
+    <h1 class="section__title">أنشطة وألعاب تفاعلية</h1>
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem" id="acts"></div>
+    <div class="card success" id="acts-msg" style="display:none;margin-top:.75rem"></div>
+
+    <section class="section" style="padding-top:1rem">
+      <h2 class="section__title">ألعاب جديدة</h2>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem">
+        <article class="card" id="game-simon">
+          <h3 class="game__prompt">سايمون يقول</h3>
+          <p class="kids-note">اتّبع تسلسل الألوان الذي يومض. التحدي يزيد تدريجيًا.</p>
+          <div id="simon-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem">
+            <button class="btn" data-c="g" style="background:#22c55e;height:72px"></button>
+            <button class="btn" data-c="r" style="background:#ef4444;height:72px"></button>
+            <button class="btn" data-c="y" style="background:#f59e0b;height:72px"></button>
+            <button class="btn" data-c="b" style="background:#3b82f6;height:72px"></button>
+          </div>
+          <div class="form__actions" style="margin-top:.5rem"><button class="btn btn--primary btn--lg" id="simon-start">ابدأ</button></div>
+        </article>
+
+        <article class="card" id="game-reaction">
+          <h3 class="game__prompt">ردّ الفعل السريع</h3>
+          <p class="kids-note">اضغط الزر عندما يتحوّل اللون إلى أخضر. كلما أسرعت أكثر كان أفضل.</p>
+          <div id="react-box" style="height:120px;border-radius:12px;background:#ef4444;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800">انتظر...</div>
+          <div class="form__actions" style="margin-top:.5rem"><button class="btn btn--primary btn--lg" id="react-btn" disabled>اضغط الآن</button></div>
+        </article>
+
+        <article class="card" id="game-match-pairs">
+          <h3 class="game__prompt">مطابقة صور</h3>
+          <p class="kids-note">اقلب البطاقات وابحث عن الأزواج المتطابقة.</p>
+          <div id="pairs-grid" class="grid" style="grid-template-columns:repeat(4,1fr);gap:.5rem"></div>
+          <div class="form__actions" style="margin-top:.5rem"><button class="btn btn--ghost btn--lg" id="pairs-restart">إعادة</button></div>
+        </article>
+      </div>
+    </section>
+
+
+
+    <template id="tpl-card">
+      <a class="card" href="#">
+        <h3 style="display:flex;align-items:center;gap:.5rem">
+          <span class="icon icon--skills"><svg class="icon-svg"><use href="#i-controller"></use></svg></span>
+          <span class="title"></span>
+          <small class="badge">تفاعلي</small>
+        </h3>
+        <p class="desc"></p>
+      </a>
+    </template>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="/js/store.js"></script>
+  <script src="/data/seed.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    (function(){
+      // Disable interactions for non-premium users (view only)
+      const uid = localStorage.getItem('currentUserId');
+      const users = (window.AppStore?.all('users')) || [];
+      const subs = (window.AppStore?.all('subscriptions')) || [];
+      const u = users.find(x => x.id === uid);
+      const premium = !!(u && u.active && subs.some(s => (s.userId===u?.id || s.email===u?.email) && s.status==='مقبول'));
+      function setDisabledScope(root){
+        if (premium) return;
+        root.querySelectorAll('button, input, select, textarea, a[href^="#"]').forEach(el=>{
+          el.setAttribute('disabled','true'); el.style.pointerEvents='none'; el.style.opacity='0.65'; el.title='التفاعل متاح للأعضاء المميزين';
+        });
+      }
+
+      // Cards navigation
+      const data = [
+        { id:'simon', title:'سايمون يقول', desc:'اتّبع تسلسل الألوان الذي يومض.', href:'#game-simon' },
+        { id:'reaction', title:'ردّ الفعل السريع', desc:'اضغط عند الإشارة بسرعة.', href:'#game-reaction' },
+        { id:'pairs', title:'مطابقة صور', desc:'اكتشف الأزواج المتشابهة.', href:'#game-match-pairs' }
+      ];
+      const grid = document.getElementById('acts');
+      const tpl = document.getElementById('tpl-card');
+      const msg = document.getElementById('acts-msg');
+      grid.innerHTML = '';
+      // إزالة التكرارات حسب id
+      const seen = new Set();
+      const unique = data.filter(d=>{ if(seen.has(d.id)) return false; seen.add(d.id); return true; });
+      const removedCount = data.length - unique.length;
+      unique.forEach(d => {
+        const c = tpl.content.cloneNode(true);
+        c.querySelector('.title').textContent = d.title;
+        c.querySelector('.desc').textContent = d.desc;
+        c.querySelector('a').href = d.href;
+        grid.appendChild(c);
+      });
+      if (removedCount>0 && msg){ msg.style.display='block'; msg.textContent = `تم إخفاء ${removedCount} عنصر مكرر من القائمة.`; }
+
+      // Game: Simon Says
+      (function simon(){
+        const grid = document.getElementById('simon-grid'); if(!grid) return;
+        const start = document.getElementById('simon-start');
+        const seq=[]; const user=[]; let playing=false; let lock=false;
+        const tones = { g:420, r:520, y:300, b:650 };
+        function flash(btn){ return new Promise(res=>{ const orig=btn.style.filter; btn.style.filter='brightness(1.35)'; try{ const ctx=new (window.AudioContext||window.webkitAudioContext)(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.frequency.value=tones[btn.dataset.c]||440; o.connect(g); g.connect(ctx.destination); g.gain.setValueAtTime(.0001, ctx.currentTime); g.gain.exponentialRampToValueAtTime(.2, ctx.currentTime+.02); o.start(); g.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime+.25); o.stop(ctx.currentTime+.3);}catch{} setTimeout(()=>{ btn.style.filter=orig; res(); }, 300); }); }
+        function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+        async function playSeq(){ lock=true; for(const c of seq){ const b = grid.querySelector(`[data-c="${c}"]`); if(b){ await flash(b); await sleep(150);} } lock=false; }
+        function nextStep(){ seq.push(['g','r','y','b'][Math.floor(Math.random()*4)]); user.length=0; playSeq(); }
+        grid.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{
+          if (lock || !playing) return; flash(b);
+          const expect = seq[user.length]; const ok = (b.dataset.c===expect); user.push(b.dataset.c);
+          if (!ok){ playing=false; alert('خطأ! حاول من جديد.'); try{ const uid=localStorage.getItem('currentUserId'); AppStore.push('sessions',{ id:AppStore.nextId('g'), userId:uid||null, startedAt:new Date().toISOString(), finishedAt:new Date().toISOString(), score: seq.length-1, game:'simon' }); }catch{} return; }
+          if (user.length===seq.length){ nextStep(); }
+        }));
+        start?.addEventListener('click', ()=>{ seq.length=0; user.length=0; playing=true; nextStep(); });
+      })();
+
+      // Game: Reaction
+      (function reaction(){
+        const box=document.getElementById('react-box'); const btn=document.getElementById('react-btn'); if(!box||!btn) return;
+        let tStart=0; let timeout=null; let armed=false;
+        function arm(){ box.style.background='#ef4444'; box.textContent='انتظر...'; btn.disabled=true; armed=true; const delay=800+Math.random()*2000; clearTimeout(timeout); timeout=setTimeout(()=>{ box.style.background='#22c55e'; box.textContent='اضغط الآن!'; btn.disabled=false; tStart=performance.now(); armed=false; }, delay); }
+        btn.addEventListener('click', ()=>{ if (armed) { alert('بدّري! انتظر إشارة اللون الأخضر.'); return; } const ms = Math.round(performance.now()-tStart); alert(`زمنك: ${ms} ملّي ثانية`); try{ const uid=localStorage.getItem('currentUserId'); AppStore.push('sessions',{ id:AppStore.nextId('g'), userId:uid||null, startedAt:new Date().toISOString(), finishedAt:new Date().toISOString(), score: Math.max(0, 1000-ms), game:'reaction' }); }catch{} arm(); });
+        box.addEventListener('click', ()=>{ if(!btn.disabled) btn.click(); });
+        arm();
+      })();
+
+      // Game: Match Pairs (images)
+      (function pairs(){
+        const grid=document.getElementById('pairs-grid'); const restart=document.getElementById('pairs-restart'); if(!grid) return;
+        const imgs=['🍎','🍌','🍇','🍓','🥝','🍒','🍍','🍉'];
+        let deck=[]; let opened=[]; let done=0; let lock=false;
+        function setup(){ const set=imgs.slice(0,6); deck=set.concat(set).sort(()=>Math.random()-0.5); opened=[]; done=0; lock=false; grid.innerHTML=''; deck.forEach((sym,i)=>{ const b=document.createElement('button'); b.className='btn'; b.style.height='64px'; b.textContent='❓'; b.addEventListener('click',()=>{ if(lock||b.classList.contains('ok')) return; b.textContent=sym; b.classList.add('open'); opened.push({i,sym,el:b}); if(opened.length===2){ lock=true; setTimeout(()=>{ const [a,c]=opened; if(a.sym===c.sym){ a.el.classList.add('ok'); c.el.classList.add('ok'); done++; } else { a.el.textContent='❓'; a.el.classList.remove('open'); c.el.textContent='❓'; c.el.classList.remove('open'); } opened=[]; lock=false; if(done===set.length){ try{ const uid=localStorage.getItem('currentUserId'); AppStore.push('sessions',{ id:AppStore.nextId('g'), userId:uid||null, startedAt:new Date().toISOString(), finishedAt:new Date().toISOString(), score: 100, game:'pairs' }); }catch{} } }, 500); } }); grid.appendChild(b); }); }
+        restart?.addEventListener('click', setup); setup();
+      })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    })();
+  </script>
+</body>
+</html>
